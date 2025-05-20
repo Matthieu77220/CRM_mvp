@@ -1,0 +1,16 @@
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Float
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from db.session import Base
+
+class Case(Base) : 
+    __tablename__= 'case'
+
+    id=Column(Integer, primary_key=True, index=True)
+    type_project = Column(String(255))
+    amount_require = Column(Float)
+    statut = Column(String(255))
+
+    prescriber_id = Column(Integer, ForeignKey('prescriber.id'))
+
+    prescriber = relationship('Prescriber', back_populates='case')

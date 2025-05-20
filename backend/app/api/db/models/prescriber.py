@@ -1,0 +1,18 @@
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Float
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from db.session import Base
+
+class Prescriber(Base) :
+    __tablename__ = 'prescriber'
+
+    id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String(255))
+    last_name = Column(String(255))
+    email = Column(String(255))
+    phone_number = Column(String(255))
+    type = Column(String(255))
+
+    case_id = Column(Integer, ForeignKey('case.id'))
+
+    case = relationship('Case', back_populates='prescriber')

@@ -63,67 +63,79 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="first_name">Prénom :</label>
-        <input
-          type="text"
-          name="first_name"
-          value={formData.first_name}
-          onChange={handleChange}
-          placeholder="Jean"
-        />
-      </div>
+    <div className="min-h-screen bg-zinc-100 flex items-center justify-center">
 
-      <div>
-        <label htmlFor="last_name">Nom :</label>
-        <input
-          type="text"
-          name="last_name"
-          value={formData.last_name}
-          onChange={handleChange}
-          placeholder="Dupont"
-        />
-      </div>
+      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md space-y-6">
 
-      <div>
-        <label htmlFor="email">Email :</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="exemple@email.com"
-        />
-      </div>
+        <h2 className="text-2xl font-bold text-center text-zinc-800">Inscirption</h2>
 
-      <div>
-        <label htmlFor="login">Login :</label>
-        <input
-          type="text"
-          name="login"
-          value={formData.login}
-          onChange={handleChange}
-          placeholder="jean.dupont"
-        />
-      </div>
+        <div>
+          <label htmlFor="first_name" className="block text-sm font-medium text-zinc-700 mb-1">Prénom :</label>
+          <input
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            placeholder="Jean"
+            className="w-full px-4 border border-zinc-300 rounded-md foucs:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <div>
-        <label htmlFor="password">Mot de passe :</label>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Mot de passe sécurisé"
-        />
-      </div>
+        <div>
+          <label htmlFor="last_name" className="block text-sm font-medium text-zinc-700 mb-1">Nom :</label>
+          <input
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+            placeholder="Dupont"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none foucs:ring-2 focus:ring-blue-500"
+          /> 
+        </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-zinc-700 mb-1">Email :</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="exemple@email.com"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none foucs:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <button type="submit">Créer mon compte</button>
-    </form>
+        <div>
+          <label htmlFor="login" className="block text-sm font-medium text-zinc-700 mb-1">Login :</label>
+          <input
+            type="text"
+            name="login"
+            value={formData.login}
+            onChange={handleChange}
+            placeholder="jean.dupont"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-zinc-700 mb-1">Mot de passe :</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Mot de passe sécurisé"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+        {successMessage && <p className="text-green-600 text-sm text-center">{successMessage}</p>}
+
+        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition">Créer mon compte</button>
+      </form>
+
+    </div>
   );
 };
 

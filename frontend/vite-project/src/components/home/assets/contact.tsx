@@ -2,13 +2,13 @@ import React from 'react';
 import Header from './components/header';
 import Footer from './components/footer';
 
-const Utilisateur: React.FC = () => {
+const Contact: React.FC = () => {
     return(
         <>
-         <Header />
-         <Footer />
+        <Header />
+        <Footer />
         </>
     );
 };
 
-export default Utilisateur;
+export default Contact;

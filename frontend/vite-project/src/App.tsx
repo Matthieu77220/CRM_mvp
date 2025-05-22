@@ -1,4 +1,4 @@
-import Log from "./components/auth/log"; 
+import Log from "./components/auth/sign_up"; 
 function App() {
   return (
     <div>

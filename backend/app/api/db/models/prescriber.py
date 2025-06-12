@@ -13,6 +13,3 @@ class Prescriber(Base) :
     phone_number = Column(String(255))
     type = Column(String(255))
 
-    case_id = Column(Integer, ForeignKey('case.id'))
-
-    case = relationship('Case', back_populates='prescriber')

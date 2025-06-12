@@ -13,6 +13,4 @@ class User(Base) :
     phone_number = Column(String(255), index=True)
     login = Column(String(255), unique=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
-    is_admin = Column(Boolean, default=True)
-    is_active = Column(Boolean, default=True)
-    reset_requested = Column(Boolean, default=False)
+   

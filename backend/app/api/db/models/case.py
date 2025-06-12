@@ -10,7 +10,3 @@ class Case(Base) :
     type_project = Column(String(255))
     amount_require = Column(Float)
     statut = Column(String(255))
-
-    prescriber_id = Column(Integer, ForeignKey('prescriber.id'))
-
-    prescriber = relationship('Prescriber', back_populates='case')

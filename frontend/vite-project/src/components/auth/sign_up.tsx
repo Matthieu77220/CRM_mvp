@@ -58,7 +58,7 @@ const RegisterForm: React.FC = () => {
 
     // Redirection après 1 seconde vers la route '/home'
     setTimeout(() => {
-      navigate('/home');
+      navigate('/login');
     }, 1000);
   };
 

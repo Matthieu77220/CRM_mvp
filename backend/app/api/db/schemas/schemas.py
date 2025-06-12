@@ -42,7 +42,7 @@ class UserRead(BaseModel):
 # Connexion d'un user
 class UserLogin(BaseModel):
     login: str
-    hashed_password: str
+    password: str
 
     class Config:
         from_attributes = True

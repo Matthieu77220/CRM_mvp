@@ -14,7 +14,4 @@ class Customer(Base) :
     adress = Column(String(255))
     contribution = Column(Float)
 
-    cocustomer_id = Column(Integer,ForeignKey('cocustomer.id'))
-
-    cocustomer = relationship('Cocustomer', back_populates='customers')
 

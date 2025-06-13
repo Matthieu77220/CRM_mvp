@@ -10,21 +10,37 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
-
+  // const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+};
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccessMessage('Connexion réussie !');
+  const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setSuccessMessage('');
 
-    // Simule un login
-    setTimeout(() => {
-      navigate('/home');
-    }, 1000);
-  };
+  try {
+    const response = await fetch('http://localhost:8000/users/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      setSuccessMessage('Connexion réussie !');
+      setTimeout(() => {
+        navigate('/home');
+      }, 1000);
+    } else {
+      const data = await response.json();
+      setError(data.detail || "Erreur lors de la connexion.");
+    }
+  } catch (err) {
+    setError("Erreur de connexion au serveur.")
+    console.error(err);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-100">

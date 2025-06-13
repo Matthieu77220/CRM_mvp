@@ -5,6 +5,8 @@ from typing import List
 from app.api.db.schemas.schemas import UserCreate, UserRead, UserUpdate
 from app.api.crud.crud_clients import create_user, get_user_by_login, get_user, update_user, delete_user
 from app.api.db.session import get_db
+from app.api.db.schemas.schemas import UserLogin
+from app.utils.security import verify_password
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -36,3 +38,10 @@ def delete_existing_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     delete_user(db, db_user)
     return None
+
+@router.post("/login")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = get_user_by_login(db, login=user.login)
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Identifiants invalides")
+    return {"message": "Connexion réussie", "user_id": db_user.id}

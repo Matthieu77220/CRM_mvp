@@ -1,21 +1,19 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-#url de connexion
-SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://root:Md28042005md*@localhost:3306/db_crm_stage"
+# Configuration de la base de données XAMPP
+DATABASE_URL = "mysql+pymysql://root:@localhost:3306/db_crm_stage"  
 
-#création du moteur de la bdd
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={'charset' : 'utf8mb4'})
+# Création du moteur de base de données
+engine = create_engine(DATABASE_URL, echo=True)
 
-#création de la session pour réguler les transactions
+# Création de la session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-#classe de la base 
+# Base pour les modèles SQLAlchemy
 Base = declarative_base()
 
-#fonction pour avoir les sessions de la bdd
-
+# Fonction pour obtenir une session de base de données
 def get_db():
     db = SessionLocal()
     try:

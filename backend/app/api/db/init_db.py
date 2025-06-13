@@ -2,7 +2,6 @@ import os
 import sys
 
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app.api.db.session import engine, Base
@@ -19,3 +18,4 @@ def init_db():
 
 if __name__ == "__main__":
     init_db()
+# This script initializes the database by creating all tables defined in the SQLAlchemy models.

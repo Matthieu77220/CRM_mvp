@@ -8,6 +8,7 @@ const RegisterForm: React.FC = () => {
     first_name: '',
     last_name: '',
     email: '',
+    phone_number: '',
     login: '',
     password: '',
   });
@@ -27,41 +28,51 @@ const RegisterForm: React.FC = () => {
     return isLongEnough && hasUppercase && hasDigit && hasSpecialChar;
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccessMessage('');
+    const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setSuccessMessage('');
 
-    const { first_name, last_name, email, login, password } = formData;
+  const { first_name, last_name, email, phone_number, login, password } = formData;
 
-    // Validation simple
-    if (!first_name || !last_name || !email || !login || !password) {
-      setError('Tous les champs sont obligatoires.');
-      return;
-    }
+  if (!first_name || !last_name || !email || !phone_number || !login || !password) {
+    setError('Tous les champs sont obligatoires.');
+    return;
+  }
 
-    if (!validatePassword(password)) {
-      setError('Le mot de passe doit contenir au moins 12 caractères, 1 majuscule, 1 chiffre et 1 caractère spécial.');
-      return;
-    }
+  if (!validatePassword(password)) {
+    setError('Le mot de passe doit contenir au moins 12 caractères, 1 majuscule, 1 chiffre et 1 caractère spécial.');
+    return;
+  }
 
-    // Simule un envoi (ex. axios.post)
-    console.log('Formulaire envoyé :', formData);
-    setSuccessMessage('Compte créé avec succès !');
-    setFormData({
-      first_name: '',
-      last_name: '',
-      email: '',
-      login: '',
-      password: '',
+  try {
+    const response = await fetch('http://localhost:8000/users/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
     });
 
-    // Redirection après 1 seconde vers la route '/home'
-    setTimeout(() => {
-      navigate('/login');
-    }, 1000);
-  };
-
+    if (response.ok) {
+      setSuccessMessage('Compte créé avec succès !');
+      setFormData({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone_number: '',
+        login: '',
+        password: '',
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } else {
+      const data = await response.json();
+      setError(data.detail || "Erreur lors de la création du compte.");
+    }
+  } catch (err) {
+    setError("Erreur de connexion au serveur.");
+  }
+};
   return (
     <div className="min-h-screen bg-zinc-100 flex items-center justify-center">
 
@@ -77,7 +88,7 @@ const RegisterForm: React.FC = () => {
             value={formData.first_name}
             onChange={handleChange}
             placeholder="Jean"
-            className="w-full px-4 border border-zinc-300 rounded-md foucs:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -89,7 +100,7 @@ const RegisterForm: React.FC = () => {
             value={formData.last_name}
             onChange={handleChange}
             placeholder="Dupont"
-            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none foucs:ring-2 focus:ring-blue-500"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           /> 
         </div>
 
@@ -101,7 +112,19 @@ const RegisterForm: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
             placeholder="exemple@email.com"
-            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none foucs:ring-2 focus:ring-blue-500"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="phone_number" className="block text-sm font-medium text-zinc-700 mb-1">Numéro de téléphone :</label>
+          <input
+            type="tel"
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleChange}
+            placeholder="+33 6 12 34 56 78"
+            className="w-full px-4 border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 

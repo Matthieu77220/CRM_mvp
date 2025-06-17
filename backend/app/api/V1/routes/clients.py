@@ -18,3 +18,12 @@ def create_client(client: CustomerCreate, db: Session = Depends(get_db)):
 @router.get('/', response_model=list[CustomerRead])
 def get_clients(db: Session = Depends(get_db)):
     return db.query(Customer).all()
+
+@router.delete("/{client_id}", status_code=204)
+def delete_client(client_id: int, db: Session = Depends(get_db)):
+    client = db.query(Customer).filter(Customer.id == client_id).first()
+    if not client:
+        return {"error": "Client not found"}
+    db.delete(client)
+    db.commit()
+    return None

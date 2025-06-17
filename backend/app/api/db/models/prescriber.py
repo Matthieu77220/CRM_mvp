@@ -6,7 +6,7 @@ from app.api.db.session import Base
 class Prescriber(Base) :
     __tablename__ = 'prescriber'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     first_name = Column(String(255))
     last_name = Column(String(255))
     email = Column(String(255))

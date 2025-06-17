@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.V1.routes import auth
+from app.api.V1.routes import clients
 from app.api.db.session import Base, engine
 
 
@@ -29,3 +30,6 @@ Base.metadata.create_all(bind=engine)
 
 # Inclusion du routeur utilisateur
 app.include_router(auth.router)
+
+#inclusion des routes clients
+app.include_router(clients.router)

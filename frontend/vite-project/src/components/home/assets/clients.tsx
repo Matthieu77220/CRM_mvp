@@ -7,8 +7,7 @@ type Client = {
     last_name: string;  
     email: string;
     phone_number: string;  
-    country: string;
-    city: string;
+    adress: string;
     project: string;
     apport: number;
 }
@@ -21,14 +20,13 @@ const Clients: React.FC = () => {
         last_name: '',
         email: '',
         phone_number: '',
-        country: '',
-        city: '',
+        adress: '',
         project: '',
         apport: 0
     });
 
     useEffect(() => {
-        fetch('http://localhost:8000/clients')
+        fetch('http://localhost:8000/clients/')
             .then((res) => res.json())
             .then((data) => setClients(data));
     }, []);
@@ -37,7 +35,9 @@ const Clients: React.FC = () => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: name === "apport" ? parseFloat(value) : value,
+            [name]: name === "apport"
+                ? value === '' ? '' : parseFloat(value)
+                : value,
         });
     };
 
@@ -49,16 +49,16 @@ const Clients: React.FC = () => {
             body: JSON.stringify(formData),
         });
         if(response.ok){
-            setClients([...clients, formData]);
+            const newClient = await response.json();
+            setClients([...clients, newClient]);
             setFormData({
                 first_name: '',
                 last_name: '',
                 email: '',
                 phone_number: '',
-                country: '',
-                city: '',
+                adress: '',
                 project: '',
-               apport: 0
+                apport: 0
            });
            setShowModal(false);
         }
@@ -99,8 +99,7 @@ const Clients: React.FC = () => {
                                 <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Nom de famille</th>
                                 <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Email</th>
                                 <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Numéro de téléphone</th>
-                                <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Pays</th>
-                                <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Ville</th>
+                                <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Adresse</th>
                                 <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Projet</th>
                                 <th className="px-4 py-2 text-left font-semibold text-zinc-700 border-b">Apport</th>
                             </tr>
@@ -117,8 +116,7 @@ const Clients: React.FC = () => {
                                         <td className="px-4 py-2 border-b">{clients.last_name}</td>
                                         <td className="px-4 py-2 border-b">{clients.email}</td>
                                         <td className="px-4 py-2 border-b">{clients.phone_number}</td>
-                                        <td className="px-4 py-2 border-b">{clients.country}</td>
-                                        <td className="px-4 py-2 border-b">{clients.city}</td>
+                                        <td className="px-4 py-2 border-b">{clients.adress}</td>
                                         <td className="px-4 py-2 border-b">{clients.project}</td>
                                         <td className="px-4 py-2 border-b">{clients.apport.toFixed(2)} €</td>
                                     </tr>
@@ -156,12 +154,8 @@ const Clients: React.FC = () => {
                                     <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleChange} className="w-full border rounded px-3 py-2" required/>  
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Pays</label>
-                                    <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full border rounded px-3 py-2" required/>   
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Ville</label>
-                                    <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full border rounded px-3 py-2" required/> 
+                                    <label className="block text-sm font-medium mb-1"></label>
+                                    <input type="text" name="adress" value={formData.adress} onChange={handleChange} className="w-full border rounded px-3 py-2" required/> 
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Projet</label>
@@ -169,7 +163,7 @@ const Clients: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1">apport</label>
-                                    <input type="number" name="contribution" value={formData.apport} onChange={handleChange} className="w-full border rounded px-3 py-2" required min="0" step="0.01"/>   
+                                    <input type="number" name="apport" value={formData.apport === 0 ? "" : formData.apport} onChange={handleChange} className="w-full border rounded px-3 py-2" required min="0" step="0.01"/>   
                                 </div>
                                 <div className="flex justify-end gap-2">   
                                     <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded bg-zinc-200 hover:bg-zinc-300">Annuler</button>

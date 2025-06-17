@@ -5,7 +5,7 @@ from app.api.db.models.customer import Customer
 from app.api.db.schemas.schemas_customer import CustomerCreate, CustomerRead
 
 
-router = APIRouter(prefix="/customers", tags=["clients"])
+router = APIRouter(prefix="/clients", tags=["clients"])
 
 @router.post("/", response_model=CustomerRead)
 def create_client(client: CustomerCreate, db: Session = Depends(get_db)):
@@ -14,3 +14,7 @@ def create_client(client: CustomerCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_client)
     return db_client
+
+@router.get('/', response_model=list[CustomerRead])
+def get_clients(db: Session = Depends(get_db)):
+    return db.query(Customer).all()

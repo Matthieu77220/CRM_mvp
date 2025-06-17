@@ -12,6 +12,7 @@ class Customer(Base) :
     email = Column(String(255)) 
     phone_number = Column(String(255))
     adress = Column(String(255))
-    contribution = Column(Float)
+    project = Column(String(255))
+    apport = Column(Float)
 
 

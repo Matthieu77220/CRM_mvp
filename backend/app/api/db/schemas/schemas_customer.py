@@ -6,11 +6,11 @@ class CustomerCreate(BaseModel):
     last_name: str
     email: EmailStr
     phone_number : str
-    city: str
+    adress: str
     project: str
     apport: float
 
-class CustomerRead(BaseModel):
+class CustomerRead(CustomerCreate):
     id: int
     class Config:
         from_attributes = True

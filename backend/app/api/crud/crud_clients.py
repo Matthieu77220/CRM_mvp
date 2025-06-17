@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.api.db.models.user import User
-from app.api.db.schemas.schemas import UserCreate, UserUpdate
+from app.api.db.schemas.schemas_user import UserCreate, UserUpdate
 from app.utils.security import hash_password
 
 def create_user(db: Session, user: UserCreate):

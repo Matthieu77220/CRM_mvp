@@ -19,6 +19,7 @@ const Clients: React.FC = () => {
     const [selectedClient, setSelectedClient] = useState<Client & {id?: number} | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [sortConfig, setSortConfig] = useState<{key: keyof Client, direction: 'asc' | 'desc'} | null>(null);
+    const [search, setSearch] = useState('');
     const [formData, setFormData] = useState<Client>({
         first_name: '',
         last_name: '',
@@ -68,9 +69,15 @@ const Clients: React.FC = () => {
         }
     };
 
+    const filtredClients = clients.filter(
+        c =>
+            c.first_name.toLowerCase().includes(search.toLowerCase()) ||
+            c.last_name.toLowerCase().includes(search.toLowerCase())
+    );
+
     const sortedClients = React.useMemo(() => {
-        if (!sortConfig) return clients;
-        const sorted = [...clients].sort((a, b) => {
+        if (!sortConfig) return filtredClients;
+        const sorted = [...filtredClients].sort((a, b) => {
             const key = sortConfig.key;
             if (typeof a[key] === 'number' && typeof b[key] === 'number') {
                 return sortConfig.direction === 'asc'
@@ -85,7 +92,7 @@ const Clients: React.FC = () => {
                 : bVal.localeCompare(aVal, 'fr', {sensitivity: 'base'});
         });
         return sorted;
-    }, [clients, sortConfig]);
+    }, [filtredClients, sortConfig]);
 
     const handleSort = (key: keyof Client) => {
         setSortConfig((prev) => {
@@ -172,6 +179,8 @@ const Clients: React.FC = () => {
                         <input 
                         type="text"
                         placeholder="rechercher un client"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
                         className="w-full border border-zinc-300 rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <span className="absolute left-3 top-2.5 text-zinc-400">

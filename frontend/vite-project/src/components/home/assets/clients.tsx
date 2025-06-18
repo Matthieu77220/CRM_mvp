@@ -31,7 +31,11 @@ const Clients: React.FC = () => {
     });
 
     useEffect(() => {
-        fetch('http://localhost:8000/clients/')
+        fetch('http://localhost:8000/clients/', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
             .then((res) => res.json())
             .then((data) => setClients(data));
     }, []);
@@ -50,7 +54,9 @@ const Clients: React.FC = () => {
         e.preventDefault();
         const response = await fetch('http://localhost:8000/clients/',{
             method: 'POST',
-            headers: {'Content-Type' : 'application/json'},
+            headers: {'Content-Type' : 'application/json',
+                      'Authorization' : 'Bearer ' + localStorage.getItem('token')
+            },
             body: JSON.stringify(formData),
         });
         if(response.ok){
@@ -147,7 +153,10 @@ const Clients: React.FC = () => {
                                     if(!selectedClient?.id) return;
                                     const response = await fetch(`http://localhost:8000/clients/${selectedClient.id}`,{
                                         method: "DELETE",
-                                    })
+                                        headers: {
+                                            "Authorization": "Bearer " + localStorage.getItem("token"),
+                                        },
+                                    });
                                     if (response.ok){
                                         setClients(clients.filter((c) => c.id !== selectedClient.id));
                                         setShowDeleteConfirm(false);

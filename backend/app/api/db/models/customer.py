@@ -14,5 +14,6 @@ class Customer(Base) :
     adress = Column(String(255))
     project = Column(String(255))
     apport = Column(Float)
+    user_id = Column(Integer, ForeignKey("user.id"))
 
-
+    user = relationship("User", back_populates="customers")

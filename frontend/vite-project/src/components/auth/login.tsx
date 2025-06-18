@@ -10,7 +10,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
-  // const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 };
@@ -23,11 +22,16 @@ const Login: React.FC = () => {
   try {
     const response = await fetch('http://localhost:8000/users/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        username: formData.login,
+        password: formData.password,
+      }),
     });
 
     if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.access_token);
       setSuccessMessage('Connexion réussie !');
       setTimeout(() => {
         navigate('/home');

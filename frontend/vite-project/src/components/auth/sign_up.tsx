@@ -63,7 +63,7 @@ const RegisterForm: React.FC = () => {
         password: '',
       });
       setTimeout(() => {
-        navigate('/login');
+        navigate('/user-login');
       }, 1000);
     } else {
       const data = await response.json();

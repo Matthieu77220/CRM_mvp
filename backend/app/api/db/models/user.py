@@ -14,3 +14,4 @@ class User(Base) :
     login = Column(String(255), unique=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
    
+    customers = relationship("Customer", back_populates="user")

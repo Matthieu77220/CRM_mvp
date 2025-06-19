@@ -18,6 +18,7 @@ const Clients: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedClient, setSelectedClient] = useState<Client & {id?: number} | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
     const [sortConfig, setSortConfig] = useState<{key: keyof Client, direction: 'asc' | 'desc'} | null>(null);
     const [search, setSearch] = useState('');
     const [formData, setFormData] = useState<Client>({
@@ -29,6 +30,7 @@ const Clients: React.FC = () => {
         project: '',
         apport: 0
     });
+    const [editData, setEditData] = useState<Client | null>(null);
 
     useEffect(() => {
         fetch('http://localhost:8000/clients/', {
@@ -44,6 +46,17 @@ const Clients: React.FC = () => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
+            [name]: name === "apport"
+                ? value === '' ? '' : parseFloat(value)
+                : value,
+        });
+    };
+
+    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!editData) return;
+        const { name, value } = e.target;
+        setEditData({
+            ...editData,
             [name]: name === "apport"
                 ? value === '' ? '' : parseFloat(value)
                 : value,
@@ -72,6 +85,28 @@ const Clients: React.FC = () => {
                 apport: 0
            });
            setShowModal(false);
+        }
+    };
+
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editData || !editData.id) return;
+        const response = await fetch(`http://localhost:8000/clients/${editData.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify(editData),
+        });
+        if(response.ok){
+            const updated = await response.json();
+            setClients(clients.map(c => c.id === updated.id ? updated : c));
+            setShowEditForm(false);
+            setSelectedClient(updated);
+            setEditData(null);
+        } else{
+            alert("Erreur lors de la modification");
         }
     };
 
@@ -112,6 +147,7 @@ const Clients: React.FC = () => {
     return (
         <>
         <Header />
+        {/* Pop-up détails client */}
         {selectedClient && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                 <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
@@ -122,13 +158,13 @@ const Clients: React.FC = () => {
                     </button>
                     <h2 className="text-xl font-bold mb-4"> Détails du client</h2>
                     <div className="mb-4">
-                        <div><b>Prénom :</b>{selectedClient.first_name}</div>
-                        <div><b>Nom de famille :</b>{selectedClient.last_name}</div>
-                        <div><b>Email :</b>{selectedClient.email}</div>
-                        <div><b>Téléphone :</b>{selectedClient.phone_number}</div>
-                        <div><b>Adresse :</b>{selectedClient.adress}</div>
-                        <div><b>Projet :</b>{selectedClient.project}</div>
-                        <div><b>Apport :</b>{selectedClient.apport} €</div>
+                        <div><b>Prénom :</b> {selectedClient.first_name}</div>
+                        <div><b>Nom de famille :</b> {selectedClient.last_name}</div>
+                        <div><b>Email :</b> {selectedClient.email}</div>
+                        <div><b>Téléphone :</b> {selectedClient.phone_number}</div>
+                        <div><b>Adresse :</b> {selectedClient.adress}</div>
+                        <div><b>Projet :</b> {selectedClient.project}</div>
+                        <div><b>Apport :</b> {selectedClient.apport} €</div>
                     </div>
                     <button
                         className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
@@ -136,45 +172,141 @@ const Clients: React.FC = () => {
                     >   
                         Supprimer le client    
                     </button>
+                    <button
+                        className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 ml-2"
+                        onClick={() => {
+                            setEditData(selectedClient);
+                            setShowEditForm(true);
+                        }}
+                    >
+                        Modifier le client
+                    </button>
                 </div>
-                {showDeleteConfirm && (
-                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60">
-                        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-                            <p className="mb-4">Êtes-vous sûr de vouloir supprimer ce client ?</p>
-                            <div className="flex justify-end gap-2">
-                                <button
-                                    className="px-4 py-2 rounded bg-zinc-200 hover:bg-zinc-300"
-                                    onClick={() => setShowDeleteConfirm(false)}
-                                >
-                                    Fermer
-                                </button>
-                                <button
-                                onClick={async () => {
-                                    if(!selectedClient?.id) return;
-                                    const response = await fetch(`http://localhost:8000/clients/${selectedClient.id}`,{
-                                        method: "DELETE",
-                                        headers: {
-                                            "Authorization": "Bearer " + localStorage.getItem("token"),
-                                        },
-                                    });
-                                    if (response.ok){
-                                        setClients(clients.filter((c) => c.id !== selectedClient.id));
-                                        setShowDeleteConfirm(false);
-                                        setSelectedClient(null);
-                                    } else {
-                                        alert('Erreur lors de la suppression')
-                                    }
-                                }}
-                                className="px-4 py-2 rounded bg-red-600 hover:bg-red-700"
-                                >
-                                    Supprimer
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         )}
+
+        {/* Pop-up suppression */}
+        {showDeleteConfirm && selectedClient && (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+                    <p className="mb-4">Êtes-vous sûr de vouloir supprimer ce client ?</p>
+                    <div className="flex justify-end gap-2">
+                        <button
+                            className="px-4 py-2 rounded bg-zinc-200 hover:bg-zinc-300"
+                            onClick={() => setShowDeleteConfirm(false)}
+                        >
+                            Fermer
+                        </button>
+                        <button
+                        onClick={async () => {
+                            if(!selectedClient?.id) return;
+                            const response = await fetch(`http://localhost:8000/clients/${selectedClient.id}`,{
+                                method: "DELETE",
+                                headers: {
+                                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                                },
+                            });
+                            if (response.ok){
+                                setClients(clients.filter((c) => c.id !== selectedClient.id));
+                                setShowDeleteConfirm(false);
+                                setSelectedClient(null);
+                            } else {
+                                alert('Erreur lors de la suppression')
+                            }
+                        }}
+                        className="px-4 py-2 rounded bg-red-600 hover:bg-red-700"
+                        >
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Pop-up édition */}
+        {showEditForm && editData && (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-70">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+                    <h2 className="text-xl font-bold mb-4">Modifier le client</h2>
+                    <form
+                        onSubmit={handleEditSubmit}
+                        className="space-y-4"
+                    >
+                        <input 
+                            type="text"
+                            name="first_name"
+                            value={editData.first_name}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="text"
+                            name="last_name"
+                            value={editData.last_name}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="email"
+                            name="email"
+                            value={editData.email}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="text"
+                            name="phone_number"
+                            value={editData.phone_number}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="text"
+                            name="adress"
+                            value={editData.adress}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="text"
+                            name="project"
+                            value={editData.project}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                            required
+                        />
+                        <input 
+                            type="number"
+                            name="apport"
+                            value={editData.apport === 0 ? "" : editData.apport}
+                            onChange={handleEditChange}
+                            className="w-full border rounded px-3 py-2"
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button
+                                type="button"
+                                className="px-4 py-2 rounded bg-zinc-200 hover:bg-zinc-300"
+                                onClick={() => setShowEditForm(false)}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+
         <main className="p-8 bg-zinc-100 min-h-screen flex flex-col items-center">
             <section className="bg-white rounded-xl shadow-md p-8 w-full max-w-3xl">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">

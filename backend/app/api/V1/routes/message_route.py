@@ -26,3 +26,19 @@ def get_received_messages(
     current_user: User = Depends(get_current_user)
 ):
     return db.query(Message).filter(Message.recipient_id == current_user.id).order_by(Message.sent_at.desc())
+
+@router.delete("/{message_id}")
+def delete_message(
+    message_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    message = db.query(Message).filter(
+        Message.id == message_id,
+        Message.recipient_id == current_user.id
+    ).first()
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    db.delete(message)
+    db.commit()
+    return {"detail": "Message deleted"}

@@ -32,6 +32,9 @@ const Login: React.FC = () => {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('token', data.access_token);
+      if (data.first_name) {
+        localStorage.setItem('first_name', data.first_name);
+      }
       setSuccessMessage('Connexion réussie !');
       setTimeout(() => {
         navigate('/home');

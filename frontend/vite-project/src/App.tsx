@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Log from "./components/auth/sign_up";
 import Login from "./components/auth/login";
@@ -8,6 +9,7 @@ import Dossiers from "./components/home/assets/dossiers";
 import Prescribteurs from "./components/home/assets/prescribteurs";
 import Contact from "./components/home/assets/contact";
 import Utilisateur from "./components/home/assets/utilisateur";
+
 
 
 
@@ -59,17 +61,125 @@ function LandingPage() {
 }
 
 function ClientMessage() {
+  const [form, setForm] = useState({
+      sender_name: "",
+      sender_email: "",
+      content: "",
+      recipient_id: "",
+    });
+  const [succes, setSucces] = useState(false);
+  useEffect(() =>{
+    if(succes) {
+      const timer = setTimeout(() => setSucces(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [succes]);
+  const [courtiers, setCourtiers] = useState<{id: number, first_name: String, last_name: string, email: string}[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("http://localhost:8000/users/")
+    .then(res => res.json())
+    .then(data => setCourtiers(data))
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
+    setForm({...form, [e.target.name]: e.target.value});
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:8000/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({...form, recipient_id: Number(form.recipient_id)}),
+    });
+    if(response.ok){
+      setSucces(true);
+      setForm({sender_name: "", sender_email: "", content: "", recipient_id: ""});
+    } else {
+      alert("erreur lors de l'envoie du message");
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Contacter votre courtier</h2>
-      <form className="flex flex-col gap-4 w-80">
-        <input type="text" placeholder='Votre prénom' className="border rounded px-3 py-2" required />
-        <input type="text" placeholder='Votre nom de famille' className="border rounded px-3 py-2" required />
-        <input type="email" placeholder="Votre email" className="border rounded px-3 py-2" required />
-        <textarea placeholder="Votre message" className="border rounded px-3 py-2" required />
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Envoyer</button>
-      </form>
-    </div>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-100">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md flex flex-col items-center">
+            <h2 className="text-2xl font-bold mb-4 text-blue-700">Contacter votre courtier</h2>
+            <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
+              <div>
+                <label className="bloc text-sm font-medium mb-1 text-zinc-700">Choisir un courtier</label>
+                <select 
+                name="recipient_id"
+                value={form.recipient_id}
+                onChange={handleChange}
+                required
+                className="w-full border border-zinc-300 rounded px-3 py-2"
+                >
+                  <option value="">Sélectionnez un courtier</option>
+                  {courtiers.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.first_name} {c.last_name} ({c.email})
+                    </option>
+                  ))}
+                </select>
+              </div> 
+              <div>
+                <label className="block text-sm font-medium mb-1 text-zinc-700">Votre prénom</label>
+                <input
+                  type="text"
+                  name="sender_name"
+                  placeholder="Votre prénom"
+                  className="w-full border border-zinc-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={form.sender_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-zinc-700">Votre email</label>
+                <input
+                  type="email"
+                  name="sender_email"
+                  placeholder="Votre email"
+                  className="w-full border border-zinc-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={form.sender_email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-zinc-700">Votre message</label>
+                <textarea
+                  name="content"
+                  placeholder="Votre message"
+                  className="w-full border border-zinc-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={form.content}
+                  onChange={handleChange}
+                  required
+                  rows={5}
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700 transition"
+              >
+                Envoyer
+              </button>
+              {succes && (
+                <div className="text-green-600 mt-2 text-center">
+                  Message envoyé !
+                </div>
+              )}
+              <button
+              className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              onClick={() => navigate('/')}
+            >
+              Retour à l'accueil
+            </button>
+            </form>
+          </div>
+        </div>
   );
 }
 

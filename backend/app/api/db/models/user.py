@@ -15,3 +15,4 @@ class User(Base) :
     hashed_password = Column(String(255), nullable=False)
    
     customers = relationship("Customer", back_populates="user")
+    messages_received = relationship("Message", back_populates="recipient")

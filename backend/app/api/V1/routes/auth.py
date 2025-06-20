@@ -9,6 +9,7 @@ from app.api.crud.crud_clients import create_user, get_user_by_login, get_user, 
 from app.api.db.session import get_db
 from app.api.db.schemas.schemas_user import UserLogin
 from app.utils.security import verify_password
+from app.api.db.models.user import User 
 
 #config JWT
 SECRET_KEY = 'change_this_secret'
@@ -78,4 +79,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not db_user or not verify_password(form_data.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Identifiants invalides")
     acces_token = create_acces_token(data={"user_id" : db_user.id})
-    return {"access_token" : acces_token, "token-type" : "bearer"}
+    return {"access_token" : acces_token, 
+            "token-type" : "bearer",
+            "first_name": db_user.first_name
+        }
+
+@router.get("/", response_model=List[UserRead])
+def get_all_users(db: Session = Depends(get_db)):
+    return db.query(User).all()

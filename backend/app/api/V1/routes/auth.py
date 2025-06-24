@@ -51,6 +51,10 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Login already registered")
     return create_user(db, user)
 
+@router.get("/me", response_model=UserRead)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
+
 @router.get("/{user_id}", response_model=UserRead)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = get_user(db, user_id)

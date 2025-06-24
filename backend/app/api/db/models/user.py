@@ -7,10 +7,10 @@ class User(Base) :
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    first_name = Column(String(255))
-    last_name = Column(String(255))
+    first_name = Column(String(255), nullable=False)
+    last_name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, nullable=False)
-    phone_number = Column(String(255), index=True)
+    phone_number = Column(String(255), index=True, nullable=False)
     login = Column(String(255), unique=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
    

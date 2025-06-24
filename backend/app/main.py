@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.V1.routes import auth
 from app.api.V1.routes import clients
+from app.api.V1.routes import dossiers_route
 from app.api.V1.routes import message_route
 from app.api.db.session import Base, engine
 
@@ -37,3 +38,6 @@ app.include_router(clients.router)
 
 #inclusion des routes messages
 app.include_router(message_route.router)
+
+#inclusion des routes dossiers
+app.include_router(dossiers_route.router)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Float, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.api.db.session import Base
@@ -10,3 +10,8 @@ class Case(Base) :
     type_project = Column(String(255))
     amount_require = Column(Float)
     statut = Column(String(255))
+    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
+    date_taken_in_charge = Column(DateTime, default=func.now)
+    is_urgent = Column(Boolean, default=False)
+
+    customer = relationship("Customer", back_populates='cases')

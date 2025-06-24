@@ -17,3 +17,4 @@ class Customer(Base) :
     user_id = Column(Integer, ForeignKey("user.id"))
 
     user = relationship("User", back_populates="customers")
+    cases = relationship('Case', back_populates='customer')

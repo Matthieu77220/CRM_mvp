@@ -18,4 +18,3 @@ def init_db():
 
 if __name__ == "__main__":
     init_db()
-# This script initializes the database by creating all tables defined in the SQLAlchemy models.

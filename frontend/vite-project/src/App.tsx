@@ -17,14 +17,14 @@ function LandingPage() {
   const navigate = useNavigate();
   return (
     <div className="relative flex flex-col md:flex-row items-center justify-center min-h-screen bg-[#eaf3fb] overflow-hidden">
-      {/* Bulles décoratives */}
+      
       <svg className="absolute left-0 top-0 w-1/3 h-1/3 opacity-30" viewBox="0 0 400 400">
         <circle cx="200" cy="200" r="200" fill="#b3d4fc" />
       </svg>
       <svg className="absolute right-0 bottom-0 w-1/4 h-1/4 opacity-20" viewBox="0 0 300 300">
         <circle cx="150" cy="150" r="150" fill="#b3d4fc" />
       </svg>
-      {/* Contenu principal */}
+      
       <div className="z-10 flex-1 flex flex-col items-start justify-center px-8">
         <h1 className="text-5xl font-extrabold text-[#1a2a3a] mb-6 leading-tight">
           Bienvenue sur<br />votre CRM
@@ -44,7 +44,7 @@ function LandingPage() {
           </button>
         </div>
       </div>
-      {/* Illustration SVG à droite */}
+      
       <div className="z-10 flex-1 flex items-center justify-center">
         <svg width="320" height="240" viewBox="0 0 320 240" fill="none">
           <rect x="60" y="40" width="200" height="140" rx="16" fill="#fff"/>

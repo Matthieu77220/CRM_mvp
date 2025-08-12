@@ -18,7 +18,7 @@ type User = {
     email: string;
     phone_number?: string;
     login?: string;
-    // Ajoute d'autres champs si besoin
+   
 };
 
 const Utilisateur: React.FC = () => {
@@ -55,16 +55,16 @@ const Utilisateur: React.FC = () => {
         <Header />
         <main className="bg-zinc-100 min-h-screen flex flex-col items-center py-8">
             <section className="w-full max-w-4xl flex flex-col md:flex-row gap-8">
-                {/* Partie profil à gauche */}
+               
                 <div className="bg-white rounded-xl shadow-md p-8 flex-1 flex flex-col items-center">
-                    {/* Avatar */}
+                  
                     <div className="w-24 h-24 rounded-full bg-violet-500 flex items-center justify-center mb-4">
                         <svg width="48" height="48" fill="white" viewBox="0 0 24 24">
                             <circle cx="12" cy="8" r="4" />
                             <ellipse cx="12" cy="17" rx="7" ry="5" />
                         </svg>
                     </div>
-                    {/* Nom et email */}
+                
                     <h2 className="text-2xl font-bold mb-1">
                         {user ? `${user.first_name} ${user.last_name}` : '...'}
                     </h2>
@@ -77,7 +77,7 @@ const Utilisateur: React.FC = () => {
                     <div className="text-zinc-500 mb-1">
                         {user ? user.login : '...'}
                     </div>
-                    {/* Bouton modifier */}
+                   
                     <button 
                         className="bg-zinc-200 px-4 py-2 rounded mb-6 hover:bg-zinc-300 transition"
                         onClick={() => {
@@ -88,7 +88,7 @@ const Utilisateur: React.FC = () => {
                         Modifier le profil
                     </button>
                 </div>
-                {/* Partie messages à droite */}
+               
                 <div className="bg-white rounded-xl shadow-md p-8 flex-1">
                     <h3 className="text-lg font-bold mb-4">Notifications</h3>
                     <div className="mb-2">
@@ -148,7 +148,7 @@ const Utilisateur: React.FC = () => {
                     </ul>
                 </div>
             </section>
-            {/* Pop-up détails message */}
+            
             {selectedMessage && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs relative">
@@ -172,7 +172,7 @@ const Utilisateur: React.FC = () => {
                     </div>
                 </div>
             )}
-            {/* Pop-up confirmation suppression */}
+            
             {messageToDelete && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-60">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
@@ -205,7 +205,7 @@ const Utilisateur: React.FC = () => {
                 </div>
             )}
 
-            {/* Pop-up modification profil */}
+            
             {editOpen && editData && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs relative">
